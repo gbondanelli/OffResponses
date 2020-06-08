@@ -13,13 +13,13 @@ Modules folder:
 
 Instructions: run the .py files to generate the following sample figures
 
-- example_dynamics_recurrent -> Fig.3B-E
-- corr_r0_peak_recurrent -> Fig.3F
-- fit_recurrent_model -> Fig.4B
-- predictions_on_r0_U_V -> Fig.4E-F
-- corr_r0_peak_data -> Fig.4G
-- orthogonal_transient_channels -> Fig.4H right
-- fit_single_cell_model -> Fig.5B-C
-- corr_r0_peak_vs_numstim -> Fig.5F
-- dynamics_variability -> Fig.6B
+- Fig.3B-E: example_dynamics_recurrent
+- Fig.3F: corr_r0_peak_recurrent
+- Fig.4B: fit_recurrent_model
+- Fig.4E-F: predictions_on_r0_U_V 
+- Fig.4G: corr_r0_peak_data
+- Fig.4H right: orthogonal_transient_channels
+- Fig.5B-C: fit_single_cell_model
+- Fig.5F: corr_r0_peak_vs_numstim
+- Fig.6B: dynamics_variability
 
