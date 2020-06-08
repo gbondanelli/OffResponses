@@ -5,7 +5,7 @@ Data folder:
 
 - off_responses_trialavg.npy: Gaussian smoothed trial-averaged OFF responses (2343 neurons x 102 timepoints x 16 stimuli)
 - off_responses_single_trials.npy: Gaussian smoothed single-trial OFF responses (2343 neurons x 102 timepoints x 16 stimuli x 20 trials)
-- infos: additional information (column 1: cell number; column 2: mouse number; column 3: session number)
+- infos.npy: additional information (column 1: cell number; column 2: mouse number; column 3: session number)
 
 Modules folder:
 
