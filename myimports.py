@@ -13,8 +13,12 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.utils.extmath import randomized_svd
 from scipy.io import loadmat,savemat
 
+from modules.DimRedTools import*
+from modules.StatTools import *
+from modules.rc_parameters import*
 from modules.dynamicsTools import*
-
+from modules.select_neurons import*
+from modules.fit_basis_functions import*
 from modules.rc_parameters import*
 set_graphic_par()
 

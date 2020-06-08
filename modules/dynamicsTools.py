@@ -48,11 +48,7 @@ def rank1_random(N,cosphi):
     return u,v
 
 def simulated_data(par):
-<<<<<<< HEAD
-
-=======
     
->>>>>>> 58af17a6174d73be89d658c4e0e44077675fdf27
     T = par['T']
     N = par['N']
     nsteps = par['nsteps']
@@ -64,45 +60,6 @@ def simulated_data(par):
     D = par['Delta']
     initial_conditions = par['initial_conditions']
     tau_sigma = par['tau_sigma']
-<<<<<<< HEAD
-
-    t = linspace(0,T,nsteps)
-    Data = empty((N,nsteps,n_trajectories))
-
-    if connectivity == 'gaussian':
-        J = random.normal(0,g/sqrt(N),(N,N))
-        for i in range(n_trajectories):
-            r0 = random.normal(0,1/sqrt(N),N)
-            Data[:,:,i] = euler_initial_condition(J,r0,t,nsteps,N,noise,1, tau_sigma)
-
-    if connectivity == 'gaussian_symm':
-        J = random.normal(0,g/sqrt(N),(N,N))
-        J = .5*(J+J.T)
-        for i in range(n_trajectories):
-            r0 = random.normal(0,1/sqrt(N),N)
-            Data[:,:,i] = euler_initial_condition(J,r0,t,nsteps,N,noise,1,tau_sigma)
-
-    elif connectivity == 'low_rank':
-        J = zeros((N,N))
-        V = empty((N,P))
-        U = empty((N,P))
-        for p in range(P):
-            u,v = rank1_random(N,0)
-            V[:,p] = v
-            U[:,p] = u
-            J = J+D*outer(u,v)
-        J = J+g*random.normal(0,1/sqrt(N),(N,N))
-        if initial_conditions == 'amplified':
-            for i in range(n_trajectories):
-                r0 = V[:,i]
-                Data[:,:,i] = euler_initial_condition(J,r0,t,nsteps,N,noise,1,tau_sigma)
-        elif initial_conditions == 'random':
-            for i in range(n_trajectories):
-                r0 = random.normal(0,1/sqrt(N),N)
-                Data[:,:,i] = euler_initial_condition(J,r0,t,nsteps,N,noise,1,tau_sigma)
-
-    return Data, J, [U,V]
-=======
     
     t=linspace(0,T,nsteps)
     Data=empty((N,nsteps,n_trajectories))
@@ -185,4 +142,3 @@ def generate_single_cell_responses_gaussian(par):
 
         
         
->>>>>>> 58af17a6174d73be89d658c4e0e44077675fdf27
