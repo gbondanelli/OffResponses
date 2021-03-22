@@ -3,27 +3,25 @@ from myimports import*
 colors = ['#FFFFFF', '#FFBABA', '#F75656', '#7C0D0D']
 cm = LinearSegmentedColormap.from_list(
         'new_cm', colors, N=100)
-
 path    = './data'
-Data   = load(path+'/off_responses_trialavg.npy')
-
+Data    = load(path+'/off_responses_trialavg.npy')
 ncells  = Data.shape[0]
 nstim   = Data.shape[2]
 dt = 108*0.031731/1000
 
-nchunks = 10;
-nrandsampl = 10
-l = 5;
-cv = False;
-cv_type = 'kfold'
+nchunks     = 10
+nrandsampl  = 10
+l           = 5
+cv          = False
+cv_type     = 'kfold'
 
-dims = 150;
-rank = 6
-nPC = rank;
+dims    = 150
+rank    = 6
+nPC     = rank
 n_free_params = dims * dims
 
-LEFT = empty((dims, nPC * nstim))
-RIGHT = empty((dims, nPC * nstim))
+LEFT    = empty((dims, nPC * nstim))
+RIGHT   = empty((dims, nPC * nstim))
 SINGVALS = empty(nPC * nstim)
 
 JTOT = 0
@@ -50,13 +48,11 @@ for i in range(nstim):
         theta[i, j] = s[0]
 ##
 overlaps = load('./data/subspace_overlaps.npy')
-
 theta2 = theta[~np.eye(theta.shape[0], dtype=bool)].reshape(theta.shape[0], -1).ravel()
 overlaps2 = overlaps[~np.eye(overlaps.shape[0], dtype=bool)].reshape(overlaps.shape[0], -1).ravel()
 
 y = theta2
 x = overlaps2
-
 N = 5000
 P = pearsonr(x, y)[0]
 P_shuffled = empty(N)
@@ -70,10 +66,7 @@ print(P)
 fig, ax = subplots(figsize=(1.85, 1.85))
 xlabel('Subspace overlap')
 ylabel('Connectivity overlap')
-
 X = linspace(0, .6, 100)
-# plot(X,X)
-
 x1 = x.reshape((-1, 1))
 model = LinearRegression()
 model.fit(x1, y)
@@ -90,7 +83,6 @@ ylim([0.0, .4])
 ax.spines['bottom'].set_bounds(0, 0.6)
 ax.spines['left'].set_bounds(0, .4)
 tight_layout()
-
 print(pearsonr(theta2, overlaps2)[0])
 
 ##

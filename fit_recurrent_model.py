@@ -36,9 +36,6 @@ for m in range(2):
     figure(figsize=(2, 2))
 
     X = expand_dims(Data[:, :, i], axis=2)
-    # d,_=PCA(X)
-    # dims = where(cumsum(d/sum(d))>0.99)[0][0]
-    # print(dims)
     rM, MT, E = fit_dynamical_system(X, dims, cv, par1)
 
     X_PC1 = E[2]
@@ -51,7 +48,6 @@ for m in range(2):
     for j in range(X_PC1.shape[1] - 1):
         X_PC_P[:, :, j + 1] = dot(expm(dt * (j + 1) * MT.T), X_PC_P[:, :, 0])
 
-    #    ax=subplot(4,4,i+1)
     ax = subplot(111)
     gca().set_aspect('equal', adjustable='box')
     ax.spines['left'].set_bounds(-.5, .5)
@@ -68,8 +64,6 @@ for m in range(2):
     X_PC_Pmean = mean(X_PC_P, axis=1)
     plot(dot(V1[:, 0], X_PC_Pmean[:, :]), dot(V1[:, 1], X_PC_Pmean[:, :]), '--', lw=1, color='#5C7C99')
 
-    #    plot(dot(V1[:,0],X_PC2),dot(V1[:,1],X_PC2),lw=1.5,color='#EA1744'*(i<8)+'#6BAB90'*(i>=8))
-    #    plot(dot(V1[:,0],X_PC2[:,0]),dot(V1[:,1],X_PC2[:,0]),'.',markersize=7,color='#EA1744'*(i<8)+'#6BAB90'*(i>=8))
     plot(dot(V1[:, 0], X_PC2), dot(V1[:, 1], X_PC2), lw=1.5, color=col[m])
     plot(dot(V1[:, 0], X_PC2[:, 0]), dot(V1[:, 1], X_PC2[:, 0]), '.', markersize=7, color=col[m])
 
@@ -84,5 +78,5 @@ for m in range(2):
         ylabel('PC2 - OFF (WN)')
 
     tight_layout()
-##
+
 

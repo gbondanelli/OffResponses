@@ -9,6 +9,9 @@ time_stim_presentation = 33*DT
 nsteps = 1000
 dt = total_time/nsteps
 
+
+## Figure 3C
+
 ntrials = 100
 ncells = Data.shape[0]
 nsteps = Data.shape[1]
@@ -84,7 +87,7 @@ if m == 1:
 
 tight_layout()
 
-################### plot PC trajectories for data and fitted responses ##########
+#------------------
 stim = [1]
 SingleTrialTraj_SingleCell_stim1 = empty((int(percentage*ncells), nsteps, ntrials, len(stim)))
 
@@ -130,7 +133,7 @@ xticks([-.5,0,.5])
 yticks([-.5,0,.5])
 
 
-################ plot norm for data and fitted responses ##################
+## Figure 3B
 stim = [1]
 Data_sel = Data[:,:,stim]; Data_sel=Data_sel[s,:,:]
 

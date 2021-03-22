@@ -4,16 +4,16 @@ colors = ['#C64343', '#FFA0A0', 'w', '#9AB5D3', '#6397D3']
 cmm = LinearSegmentedColormap.from_list(
     'new_cm', colors[::-1], N=100)
 
-##
+
 parameters = {'T': 4, 'nsteps': 2000, 'N': 1000, 'n_trajectories': 2, 'connectivity': 'rotational',
               'noise': 0.0, 'g': 0, 'rank': 20, 'Delta': 5, 'initial_conditions': 'amplified', 'tau_sigma': 0.,
               'Delta_rot': [1, 7], 'tau': 1
               }
-##
+
 Data0, w1, w2 = simulated_data(parameters)
 dt = parameters['T'] / float(parameters['nsteps'])
 
-##
+## Figure 6C
 A1 = Data0[:, :, 0]
 A2 = Data0[:, :, 1]
 # %% Plot trajectories on PC1 PC2
@@ -64,7 +64,6 @@ uy = dot(w2[:, 1], V2[:, 1])
 plot(1 * array([0, vx]), 1 * array([0, vy]), '--', lw=1, c='#F46831')
 plot(1 * array([0, ux]), 1 * array([0, uy]), lw=1, c='#F46831')
 
-# legend(['OFF - 8Hz','OFF - WN'], frameon=0)
 xticks([-.5, 0, .5])
 yticks([-.5, 0, .5])
 xlabel(r'PC1 (stim 2)')
@@ -72,7 +71,8 @@ ylabel(r'PC2 (stim 2)')
 tight_layout()
 show()
 
-##
+## Figure 6A
+
 n = 30
 ncommon = 30
 i0 = where(amax(A1, axis=1) > 0)[0]
@@ -119,7 +119,8 @@ xticks([0, 2, 4])
 yticks([10, 20, 30])
 tight_layout()
 show()
-##
+
+## Figure 6D
 for neuron in range(10):
     figure(figsize=(2.3, 1.75))
     Min = min(amin(C1[neuron, :]), amin(C2[neuron, :]))
@@ -131,7 +132,7 @@ for neuron in range(10):
     xlim(dt * array([-n2, parameters['nsteps']]))
     tight_layout()
 
-## plot norm
+## Figure 6B
 n2 = 200
 nsteps = parameters['nsteps']
 N = parameters['N']
@@ -166,7 +167,7 @@ plot(array([0, 0]), [0, a], c='grey', lw=1, ls='--')
 xlim(dt * array([-n2, nsteps]))
 tight_layout()
 
-##
+## Figure 6E
 
 parameters = {'T': 4, 'nsteps': 2000, 'N': 1000, 'n_trajectories': 5, 'connectivity': 'rotational',
               'noise': 0.0, 'g': 0, 'rank': 20, 'Delta': 5, 'initial_conditions': 'amplified', 'tau_sigma': 0.,
@@ -193,7 +194,7 @@ for i_stim in range(nstim):
         peak = peak / norm(peak)
         corr_ic_peak[i_sub, i_stim] = ic @ peak
 
-##
+
 fig, ax = subplots(figsize=(2.4, 1.8))
 m = mean(corr_ic_peak, 0)
 s = std(corr_ic_peak, 0)

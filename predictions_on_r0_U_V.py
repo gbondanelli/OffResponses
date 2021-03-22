@@ -15,22 +15,13 @@ l = 5
 constraint = 'none'
 nrandsampl = 1
 nchunks = 1
-nsubsamplings = 2 #20
+nsubsamplings = 20
 dims = 100
 rank = 6;  # rank='none'
 overlaps = empty((rank, rank, nsubsamplings, nstim))
-norm_UV = empty((nsubsamplings, nstim))
-bound_stability = empty((nsubsamplings, nstim))
-initial_condition = empty((nsubsamplings, nstim))
-initial_condition_along_v = empty((nsubsamplings, nstim))
 initial_condition_along_v2 = empty((nsubsamplings, nstim))
-
-initial_condition_rand = empty((nsubsamplings, nstim))
-initial_condition_along_v_rand = empty((nsubsamplings, nstim))
 initial_condition_along_v2_rand = empty((nsubsamplings, nstim))
-
 diffD = empty((nsubsamplings, int(rank / 2), nstim))
-
 indeces_v2 = empty(int(rank / 2))
 
 for i_n in range(nstim):
@@ -42,54 +33,34 @@ for i_n in range(nstim):
         D = D[:, :, None]
         par = ['kfold', nchunks, nrandsampl, l, dims * dims, constraint, rank, dt]
         statistics, MT, R = fit_dynamical_system(D, dims, False, par)
-        # print(statistics)
+
         X_PC = R[2]
         tstar = dt * argmax(norm(X_PC, axis=0))
 
         r0 = X_PC[:, 0]
-        J = MT.T + identity(dims)
+        J  = MT.T + identity(dims)
         JS = (J + J.T) / 2.
-        print(max(eigvals(J).real), max(eigvals(JS)))
         U, S, VT = svd(J)
 
-        U = U[:, :rank]
-        VT = VT[:rank, :]
-        S = S[:rank]
-
-        eig_J = eigvals(VT @ U @ diag(S))
-        print(eig_J)
+        U   = U[:, :rank]
+        VT  = VT[:rank, :]
+        S   = S[:rank]
 
         for i_R in range(int(rank / 2)):
             indeces_v2[i_R] = int(2 * i_R) + argmax([S[i_R], S[i_R + 1]])
         V2T = VT[indeces_v2.astype(int), :]
 
         diffD[i_sub, :, i_n] = diff(S)[[0, 2, 4]]
-
         B = dot(VT, U)
-
-        r0 = r0 / norm(r0)
-        alphas = dot(VT, r0)
-        A = random.normal(0, 1, (dims, dims))
-        A[:, :rank] = VT.T
-        q, _ = qr(A)
-        z_perp = q[:, rank:]
-        betas = dot(z_perp.T, r0)
-
+        r0      = r0 / norm(r0)
         overlaps[:, :, i_sub, i_n] = B
-        # initial_condition[i_sub,i_n] = compute_weigthed_average(alphas, betas, S)/e**(2*(1-eig_J[0].real)*tstar)
-        initial_condition_along_v[i_sub, i_n] = sqrt(sum(dot(VT, r0) ** 2))
         initial_condition_along_v2[i_sub, i_n] = sqrt(sum(dot(V2T, r0) ** 2))
 
         r0 = random.normal(0, 1, dims)
         r0 = r0 / norm(r0)
-        alphas = dot(VT, r0)
-        betas = dot(z_perp.T, r0)
-
-        # initial_condition_rand[i_sub,i_n] = compute_weigthed_average(alphas, betas, S)/e**(2*(1-eig_J[0].real)*tstar)
-        initial_condition_along_v_rand[i_sub, i_n] = sqrt(sum(dot(VT, r0) ** 2))
         initial_condition_along_v2_rand[i_sub, i_n] = sqrt(sum(dot(V2T, r0) ** 2))
 
-## plot elements of V.T dot U
+## Figure 5B left panel
 
 colors = ['#ed4276', 'w', '#85aded']
 cm = LinearSegmentedColormap.from_list('new_cm', colors, N=100)
@@ -112,7 +83,8 @@ xticks([])
 yticks([])
 tight_layout()
 
-## Plot histogram elements of V.T dot U
+## Figure 5B right panel
+
 mask_high_overlap = zeros((rank, rank))
 for i in range(rank):
     if i % 2 == 0:
@@ -134,7 +106,8 @@ xlabel('Overlap magnitude')
 ylabel('Number of pairs (norm.)')
 tight_layout()
 
-##
+## Figure 5C right panel
+
 m = mean(initial_condition_along_v2, 0)
 m_rand = mean(initial_condition_along_v2_rand, 0)
 
@@ -153,7 +126,8 @@ ylabel('Component of $\mathbf{r}_0$ along $\mathbf{v}$\'s')
 yticks([0, .25, .5, .75, 1])
 tight_layout()
 
-##
+## Figure 5C left panel
+
 D = amax(abs(diffD) / 2, 1)
 m = D
 
@@ -172,7 +146,4 @@ ax.spines['bottom'].set_visible(False)
 yticks([0, 1, 2, 3])
 xticks([])
 tight_layout()
-
-##
-##
 

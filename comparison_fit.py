@@ -3,21 +3,24 @@ from myimports import*
 colors = ['#FFFFFF', '#FFBABA', '#F75656', '#7C0D0D']
 cm = LinearSegmentedColormap.from_list(
         'new_cm', colors, N=100)
-
 path    = './data'
-Data   = load(path+'/off_responses_trialavg.npy')
-
+Data    = load(path+'/off_responses_trialavg.npy')
 ncells  = Data.shape[0]
 nstim   = Data.shape[2]
 dt = 108*0.031731/1000
 
-nchunks = 10; nrandsampl = 10
-l=2.; cv = True; cv_type = 'kfold'
-dims=150; rank=70; n_free_params   = dims*dims
+nchunks = 10
+nrandsampl = 10
+l = 2.
+cv = True
+cv_type = 'kfold'
+dims = 150
+rank = 70
+n_free_params = dims*dims
 
 par    = [cv_type,nchunks,nrandsampl,l,n_free_params,'none',rank,dt]
-R2_J,_,_,R2_JTOT, R2_sh           = fit_dynamical_system(Data,dims,cv,par)
-##
+R2_J,_,_,R2_JTOT, R2_sh = fit_dynamical_system(Data,dims,cv,par)
+
 
 data = [R2_J, R2_JTOT, R2_sh]
 labels = ['Full','Sum', 'Shuffle']
