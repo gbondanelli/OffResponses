@@ -1,5 +1,5 @@
 # OffResponses
-Supplementary code for the paper "Network dynamics underlying OFF responses in he auditory cortex" by Giulio Bondanelli, Thomas Deneux, Brice Bathellier and Srdjan Ostojic, eLife (2020)
+Supplementary code for the paper "Network dynamics underlying OFF responses in he auditory cortex" by Giulio Bondanelli, Thomas Deneux, Brice Bathellier and Srdjan Ostojic, eLife (2021)
 
 Data folder:
 
