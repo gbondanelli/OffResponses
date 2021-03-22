@@ -1,5 +1,5 @@
 # OffResponses
-Supplementary code for the paper "Network dynamics underlying OFF responses in he auditory cortex" by Giulio Bondanelli, Thomas Deneux, Brice Bathellier and Srdjan Ostojic (2020)
+Supplementary code for the paper "Network dynamics underlying OFF responses in he auditory cortex" by Giulio Bondanelli, Thomas Deneux, Brice Bathellier and Srdjan Ostojic, eLife (2020)
 
 Data folder:
 
@@ -13,13 +13,14 @@ Modules folder:
 
 Instructions: run the .py files to generate the following sample figures
 
-- Fig.3B-E: example_dynamics_recurrent
-- Fig.3F: corr_r0_peak_recurrent
-- Fig.4B: fit_recurrent_model
-- Fig.4E-F: predictions_on_r0_U_V 
-- Fig.4G: corr_r0_peak_data
-- Fig.4H right: orthogonal_transient_channels
-- Fig.5B-C: fit_single_cell_model
-- Fig.5F: corr_r0_peak_vs_numstim
-- Fig.6B: dynamics_variability
+- Fig.3C: fit_single_cell_model
+- Fig.3H: fit_recurrent_model
+- Fig.5B,C: predictions_on_r0_U_V 
+- Fig.5D: corr_r0_peak_data
+- Fig.5E: corr_r0_peak_vs_numstim
+- Fig.6: example_dynamics_recurrent
+- Fig.7A: connectivity_overlaps
+- Fig.7B: connectivity_vs_subspace_overlaps
+- Fig.7C: comparison_fit
+- Fig.8B: dynamics_variability
 
