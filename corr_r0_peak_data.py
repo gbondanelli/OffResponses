@@ -48,14 +48,6 @@ S = s[12:16]
 fill_between(arange(13,17),M-S,M+S,color=col2_fill)
 plot(arange(13,17),M,'o-',lw=1.,color=col2,markersize=2.5)
 
-plot([1,16],[1/e,1/e],'--',color='grey', lw=.7)
-plot([1,16],[-1/e,-1/e],'--',color='grey', lw=.7)
-
-for i in range(16):
-    p = sum(abs(corr[:,i])>1/e)/float(nresampling)
-    if p<0.05:
-        plot([i+1],[.95],'x', markersize=2, color='#fc5203')
-
 ylim(-1,1)
 xlim(0.5,16.5)
 xticks([1,4,8,12,16])
@@ -63,3 +55,6 @@ yticks([-1,0,1])
 xlabel('Stimuli')
 ylabel('Initial state - peak\n correlation')
 tight_layout()
+
+##
+

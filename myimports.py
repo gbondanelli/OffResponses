@@ -20,6 +20,7 @@ from modules.dynamicsTools import*
 from modules.select_neurons import*
 from modules.fit_basis_functions import*
 from modules.rc_parameters import*
+from modules.plottingtools import*
 set_graphic_par()
 
 from matplotlib.pyplot import *

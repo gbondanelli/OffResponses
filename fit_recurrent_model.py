@@ -8,67 +8,81 @@ total_time = 108*DT
 time_stim_presentation = 33*DT
 nsteps = 1000
 dt = total_time/nsteps
+DT = 0.031731
+total_time = 108 * DT
+time_stim_presentation = 33 * DT
+nsteps = 1000
+dt = total_time / nsteps
 
-#####  select stimulus  #####
-stim=7
-########################
+## %%  fit
+stim = [1, 5]
 
-T=Data.shape[1]
-dims=100; nchunks=20; nrandsampl=20
-cv=False; n_free_params=dims*dims; constraint1='none'
-l=2
-rank=70  ##### rank='none' for ordinary linear regression 
-n_free_params1=int(dims*dims)
-par1=['random',nchunks,nrandsampl,l,n_free_params1,constraint1,rank,dt]
-ntrials=100
-col1 = '#F14377'
-col2 = '#569FD1'
+dims = 100
+nchunks = 20
+nrandsampl = 20
+cv = False
+n_free_params = dims * dims
+constraint1 = 'none'
+l = 1
+rank = 'none'
+n_free_params1 = int(dims * dims)
+par1 = ['random', nchunks, nrandsampl, l, n_free_params1, constraint1, rank, dt]
 
-rM,MT,E=fit_dynamical_system(Data,dims,cv,par1)
+ntrials = 100
+col = ['#F14377', '#569FD1']
 
-X_PC1=E[2]
-X_dot=E[3]
-X_dotP=E[4]
-X_PC2=E[5]
+for m in range(2):
+    i = stim[m]
+    figure(figsize=(2, 2))
 
-#generate fit through exponential mapping
-X_PC_P=empty((dims, ntrials, T))
-X_PC_P[:,:,0]=random.multivariate_normal(X_PC2[:,stim*(T-1)],.0005*identity(dims),ntrials).T
-for j in range(T-1):
-    X_PC_P[:,:,j+1]=dot(expm(dt*(j+1)*MT.T),X_PC_P[:,:,0])
+    X = expand_dims(Data[:, :, i], axis=2)
+    # d,_=PCA(X)
+    # dims = where(cumsum(d/sum(d))>0.99)[0][0]
+    # print(dims)
+    rM, MT, E = fit_dynamical_system(X, dims, cv, par1)
 
-#PCA on data
-X=X_PC2[:,stim*(T-1):(stim+1)*(T-1)]
-d1,V1 = PCA(X)
-V1[:,0] = -V1[:,0]
-V1[:,1] = -V1[:,1]
+    X_PC1 = E[2]
+    X_dot = E[3]
+    X_dotP = E[4]
+    X_PC2 = E[5]
 
-figure(figsize=(2,2))
-ax=subplot(111)
-gca().set_aspect('equal', adjustable='box')
-ax.spines['left'].set_bounds(-.5, .5)
-ax.spines['bottom'].set_bounds(-.5,.5)
-ax.spines['bottom'].set_position(('axes', -0.1))
-ax.spines['left'].set_position(('axes', -0.))
+    X_PC_P = empty((dims, ntrials, X_PC1.shape[1]))
+    X_PC_P[:, :, 0] = random.multivariate_normal(X_PC2[:, 0], .0005 * identity(dims), ntrials).T
+    for j in range(X_PC1.shape[1] - 1):
+        X_PC_P[:, :, j + 1] = dot(expm(dt * (j + 1) * MT.T), X_PC_P[:, :, 0])
 
-for i_trial in range(ntrials):
-    ln,=ax.plot(dot(V1[:,0],X_PC_P[:,i_trial,:]),dot(V1[:,1],X_PC_P[:,i_trial,:]),lw=1.2,color='#D1D9DC')
-    ln.set_solid_capstyle('round')
+    #    ax=subplot(4,4,i+1)
+    ax = subplot(111)
+    gca().set_aspect('equal', adjustable='box')
+    ax.spines['left'].set_bounds(-.5, .5)
+    ax.spines['bottom'].set_bounds(-.5, .5)
+    ax.spines['bottom'].set_position(('axes', -0.1))
+    ax.spines['left'].set_position(('axes', -0.))
 
-X_PC_Pmean=mean(X_PC_P,axis=1)
-plot(dot(V1[:,0],X_PC_Pmean[:,:]),dot(V1[:,1],X_PC_Pmean[:,:]),'--', lw=1,color='#5C7C99')
+    d1, V1 = PCA(X_PC2)
+    V1[:, 1] = -V1[:, 1]
 
-plot(dot(V1[:,0],X),dot(V1[:,1],X),lw=1.5,color=col2)
-plot(dot(V1[:,0],X[:,0]),dot(V1[:,1],X[:,0]),'.',markersize=7,color=col2)
+    for i_trial in range(ntrials):
+        ln, = ax.plot(dot(V1[:, 0], X_PC_P[:, i_trial, :]), dot(V1[:, 1], X_PC_P[:, i_trial, :]), lw=2, color='#D1D9DC')
+        ln.set_solid_capstyle('round')
+    X_PC_Pmean = mean(X_PC_P, axis=1)
+    plot(dot(V1[:, 0], X_PC_Pmean[:, :]), dot(V1[:, 1], X_PC_Pmean[:, :]), '--', lw=1, color='#5C7C99')
 
-xticks([-.5,0,.5])
-yticks([-.5,0,.5])
+    #    plot(dot(V1[:,0],X_PC2),dot(V1[:,1],X_PC2),lw=1.5,color='#EA1744'*(i<8)+'#6BAB90'*(i>=8))
+    #    plot(dot(V1[:,0],X_PC2[:,0]),dot(V1[:,1],X_PC2[:,0]),'.',markersize=7,color='#EA1744'*(i<8)+'#6BAB90'*(i>=8))
+    plot(dot(V1[:, 0], X_PC2), dot(V1[:, 1], X_PC2), lw=1.5, color=col[m])
+    plot(dot(V1[:, 0], X_PC2[:, 0]), dot(V1[:, 1], X_PC2[:, 0]), '.', markersize=7, color=col[m])
 
-if stim == 1:
-    xlabel('PC1 - OFF (8kHz)')
-    ylabel('PC2 - OFF (8kHz)')
-if stim == 5:
-    xlabel('PC1 - OFF (WN)')
-    ylabel('PC2 - OFF (WN)')
+    xticks([-.5, 0, .5])
+    yticks([-.5, 0, .5])
+    #    title('Stimulus %s'%(i+1))
+    if m == 0:
+        xlabel('PC1 - OFF (8kHz)')
+        ylabel('PC2 - OFF (8kHz)')
+    if m == 1:
+        xlabel('PC1 - OFF (WN)')
+        ylabel('PC2 - OFF (WN)')
 
-tight_layout()
+    tight_layout()
+##
+

@@ -55,3 +55,6 @@ xticks([0.05,.15,.25,.35],['$0$','$0.1$','$0.2$','$0.3$'])
 ylabel('Variability')
 xlabel('Time(s)')
 tight_layout()
+
+##
+

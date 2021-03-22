@@ -3,7 +3,7 @@ from numpy import random
 from random import sample
 from numpy.linalg import cond
 from numpy.linalg import eigh,norm,inv
-from scipy.linalg import eig,svdvals
+from scipy.linalg import eig,svdvals,qr
 
 from matplotlib.pyplot import *
 
@@ -47,8 +47,8 @@ def rank1_random(N,cosphi):
     v=x1; u=cosphi*v+sqrt(1-cosphi**2)*x2
     return u,v
 
+
 def simulated_data(par):
-    
     T = par['T']
     N = par['N']
     nsteps = par['nsteps']
@@ -60,42 +60,65 @@ def simulated_data(par):
     D = par['Delta']
     initial_conditions = par['initial_conditions']
     tau_sigma = par['tau_sigma']
-    
-    t=linspace(0,T,nsteps)
-    Data=empty((N,nsteps,n_trajectories))
-    
+    tau = par['tau']
+
+    t = linspace(0, T, nsteps)
+    Data = empty((N, nsteps, n_trajectories))
+
     if connectivity == 'gaussian':
-        J=random.normal(0,g/sqrt(N),(N,N))
+        J = random.normal(0, g / sqrt(N), (N, N))
         for i in range(n_trajectories):
-            r0=random.normal(0,1/sqrt(N),N)
-            Data[:,:,i]=euler_initial_condition(J,r0,t,nsteps,N,noise,1, tau_sigma)
-            
+            r0 = random.normal(0, 1 / sqrt(N), N)
+            Data[:, :, i] = euler_initial_condition(J, r0, t, nsteps, N, noise, 1, tau_sigma)
+        return Data
+
     if connectivity == 'gaussian_symm':
-        J=random.normal(0,g/sqrt(N),(N,N))
-        J=.5*(J+J.T)
+        J = random.normal(0, g / sqrt(N), (N, N))
+        J = .5 * (J + J.T)
         for i in range(n_trajectories):
-            r0=random.normal(0,1/sqrt(N),N)
-            Data[:,:,i]=euler_initial_condition(J,r0,t,nsteps,N,noise,1,tau_sigma)
-            
+            r0 = random.normal(0, 1 / sqrt(N), N)
+            Data[:, :, i] = euler_initial_condition(J, r0, t, nsteps, N, noise, 1, tau_sigma)
+        return Data
+
     elif connectivity == 'low_rank':
-        J=zeros((N,N))
-        V=empty((N,P))
-        U=empty((N,P))
+        J = zeros((N, N))
+        V = empty((N, P))
+        U = empty((N, P))
         for p in range(P):
-            u,v=rank1_random(N,0)
-            V[:,p]=v; U[:,p]=u
-            J=J+D*outer(u,v)
-        J=J+g*random.normal(0,1/sqrt(N),(N,N))
+            u, v = rank1_random(N, 0)
+            V[:, p] = v;
+            U[:, p] = u
+            J = J + D * outer(u, v)
+        J = J + g * random.normal(0, 1 / sqrt(N), (N, N))
         if initial_conditions == 'amplified':
             for i in range(n_trajectories):
-                r0=V[:,i]
-                Data[:,:,i]=euler_initial_condition(J,r0,t,nsteps,N,noise,1,tau_sigma)
+                r0 = V[:, i]
+                Data[:, :, i] = euler_initial_condition(J, r0, t, nsteps, N, noise, 1, tau_sigma)
         elif initial_conditions == 'random':
             for i in range(n_trajectories):
-                r0=random.normal(0,1/sqrt(N),N)
-                Data[:,:,i]=euler_initial_condition(J,r0,t,nsteps,N,noise,1,tau_sigma)
-               
-    return Data, J, [U,V]
+                r0 = random.normal(0, 1 / sqrt(N), N)
+                Data[:, :, i] = euler_initial_condition(J, r0, t, nsteps, N, noise, 1, tau_sigma)
+
+        return Data, J, [U, V]
+
+    elif connectivity == 'rotational':
+        J = zeros((N, N))
+        D1, D2 = par['Delta_rot']
+        V1 = empty((N, P))
+        V2 = empty((N, P))
+        for p in range(P):
+            A, _ = qr(random.normal(0, 1, (N, 2)))
+            v1 = A[:, 0]
+            v2 = A[:, 1]
+            u1 = D1 * v2
+            u2 = -D2 * v1
+            J += outer(u1, v1) + outer(u2, v2)
+            V1[:, p] = v1
+            V2[:, p] = v2
+        for i in range(n_trajectories):
+            r0 = V2[:, i]
+            Data[:, :, i] = euler_initial_condition(J, r0, t, nsteps, N, noise, tau, tau_sigma)
+        return Data, V1, V2
 
 def OFF_filter(t,alpha,tau):
     return (alpha*t+1)*exp(-alpha*t/tau)
